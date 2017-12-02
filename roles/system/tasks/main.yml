@@ -1,10 +1,14 @@
 ---
   - name: Update packages
     yum:
-        update_cache: yes
+      name: "*"
+      update_cache: yes
+      state: latest
 
   - name: Install packages
-    yum: "name={{ item }} state=latest"
+    yum:
+      name: "{{ item }}"
+      state: latest
     with_items:
       - epel-release
       - yum-utils
@@ -15,7 +19,3 @@
       special_time: reboot
       job: "package-cleanup --oldkernels --count=2"
       state: present
-
-  - name: Upgrade packages
-    yum:
-      upgrade: dist
