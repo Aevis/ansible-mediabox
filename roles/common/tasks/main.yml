@@ -11,7 +11,6 @@
       - mc
       - ncdu
       - unzip
-      - unrar
       - p7zip
       - rsync
       - git
