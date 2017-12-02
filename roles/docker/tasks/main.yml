@@ -1,0 +1,28 @@
+---
+  - name: Add official repository
+    yum_repository:
+      name: docker
+      description: Docker repository
+      baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+      gpgkey: https://download.docker.com/linux/centos/gpg
+
+  - name: Install docker
+    yum:
+      name: docker-ce
+      state: installed
+      update_cache: yes
+
+  - name: Start docker
+    systemd:
+      name: docker
+      state: started
+      enabled: yes
+
+  - name: Install ctop
+    get_url:
+      url: https://github.com/bcicen/ctop/releases/download/v0.6.1/ctop-0.6.1-linux-amd64
+      dest: /usr/local/bin/ctop
+      mode: 0755
+      owner: root
+      group: root
+      force: yes
