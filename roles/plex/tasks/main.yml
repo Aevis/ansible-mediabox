@@ -1,0 +1,40 @@
+---
+  - name: Stop and remove existing container
+    docker_container:
+      name: plex
+      state: absent
+
+  - name: Check for existing preferences
+    stat:
+      path: "/opt/plex/Library/Application Support/Plex Media Server/Preferences.xml"
+    register: plex_prefs
+
+  - name: Ask for PlexPass claim token
+    pause:
+      prompt: "Enter PlexPass claim token from plex.tv/claim"
+    register: plex_claim
+    when: plex_prefs.stat.exists == False
+
+  - name: Create and start container
+    docker_container:
+      name: plex
+      image: "plexinc/pms-docker:{{ plex.tag }}"
+      pull: yes
+      published_ports:
+        - "127.0.0.1:32400:32400/tcp"
+        - "3005:3005/tcp"
+        - "8324:8324/tcp"
+        - "32469:32469/tcp"
+        - "1900:1900/udp"
+        - "32410:32410/udp"
+        - "32412:32412/udp"
+        - "32413:32413/udp"
+        - "32414:32414/udp"
+        - "33400:33400/tcp"
+        - "33443:33443/tcp"
+      env:
+        HOSTNAME: "PlexServer"
+        PLEX_CLAIM: "{{ plex.claim.user_input | default(omit) }}"
+        ALLOWED_NETWORKS: "192.168.1.0/24"
+      restart_policy: always
+      state: started
