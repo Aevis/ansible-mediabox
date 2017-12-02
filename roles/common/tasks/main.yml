@@ -13,5 +13,4 @@
       - unzip
       - p7zip
       - rsync
-      - git
       - python
