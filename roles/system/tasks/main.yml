@@ -1,0 +1,21 @@
+---
+  - name: Update packages
+    yum:
+        update_cache: yes
+
+  - name: Install packages
+    yum: "name={{ item }} state=latest"
+    with_items:
+      - epel-release
+      - yum-utils
+
+  - name: Purge old kernels on reboot
+    cron:
+      name: "Purge old kernels on reboot"
+      special_time: reboot
+      job: "package-cleanup --oldkernels --count=2"
+      state: present
+
+  - name: Upgrade packages
+    yum:
+      upgrade: dist
