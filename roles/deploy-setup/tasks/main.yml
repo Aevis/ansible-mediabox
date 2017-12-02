@@ -18,7 +18,7 @@
     authorized_key:
       user: "{{ item.name }}"
       manage_dir: yes
-      key: "{{ lookup('file', 'pub_keys/{{ item.name }}.pub') }}"
+      key: "{{ lookup('file', 'pub-keys/{{ item.name }}.pub') }}"
       state: present
     with_items: "{{ users }}"
 
