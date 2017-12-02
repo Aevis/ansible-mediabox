@@ -1,0 +1,19 @@
+---
+  - name: Create local deploy user and ssh key pair
+    local_action:
+      module: user
+      name: "{{ deploy_user_name }}"
+      generate_ssh_key: yes
+      state: present
+
+  - name: Create remote deploy user
+    user:
+      name: "{{ deploy_user_name }}"
+      state: present
+
+  - name: Add public key to server
+    authorized_key:
+      user: "{{ deploy_user_name }}"
+      state: present
+      manage_dir: yes
+      key: "{{ lookup('file', '~{{ deploy_user_name }}/.ssh/id_rsa.pub') }}"
