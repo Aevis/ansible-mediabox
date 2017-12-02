@@ -1,6 +1,7 @@
 ---
 - hosts: all
   vars_files:
+    - users.yml
     - variables.yml
   roles:
     - { role: deploy-setup, tags: ['full', 'deploy-setup'] }

@@ -1,0 +1,4 @@
+---
+  users:
+    - name: deploy
+      sudo: yes

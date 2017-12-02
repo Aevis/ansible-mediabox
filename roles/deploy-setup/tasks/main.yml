@@ -1,19 +1,39 @@
 ---
-  - name: Create local deploy user and ssh key pair
-    local_action:
-      module: user
-      name: "{{ deploy_user_name }}"
-      generate_ssh_key: yes
-      state: present
-
-  - name: Create remote deploy user
+  - name: Create users
     user:
-      name: "{{ deploy_user_name }}"
+      name: "{{ item.name }}"
+      shell: /bin/bash
+      comment: "created by ansible"
       state: present
+    with_items: "{{ users }}"
 
-  - name: Add public key to server
+  - name: Allow specified users to sudo
+    template:
+      src: sudoers.j2
+      dest: /etc/sudoers.d/sudoers
+      validate: 'visudo -cf %s'
+      mode: 0440
+
+  - name: Upload public keys
     authorized_key:
-      user: "{{ deploy_user_name }}"
-      state: present
+      user: "{{ item.name }}"
       manage_dir: yes
-      key: "{{ lookup('file', '~{{ deploy_user_name }}/.ssh/id_rsa.pub') }}"
+      key: "{{ lookup('file', 'pub_keys/{{ item.name }}.pub') }}"
+      state: present
+    with_items: "{{ users }}"
+
+  - name: Disallow password authentication
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^#PasswordAuthentication"
+      line: "PasswordAuthentication no"
+      state: present
+    notify: Restart ssh
+
+  - name: Disallow root SSH access
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^#PermitRootLogin"
+      line: "PermitRootLogin no"
+      state: present
+    notify: Restart ssh
