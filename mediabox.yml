@@ -1,12 +1,13 @@
 ---
 - hosts: all
+  become: yes
   vars_files:
     - users.yml
     - variables.yml
   roles:
-    - { role: kernel, become: yes, tags: ['setup', 'kernel'] }
+    - { role: kernel, tags: ['setup', 'kernel'] }
     - { role: users, tags: ['setup', 'users'] }
     - { role: system, tags: ['setup', 'system'] }
     - { role: common, tags: ['setup', 'common'] }
     - { role: docker, tags: ['setup', 'docker'] }
-    - { role: plex, become: yes, become_user: root, tags: ['plex'] }
+    - { role: plex, tags: ['plex'] }
