@@ -1,4 +1,23 @@
 ---
+  - name: Get plex uid
+    shell: "id -u plex"
+    register: uid
+
+  - name: Get plex gid
+    shell: "id -g plex"
+    register: gid
+
+  - name: Create common Plex directories
+    file:
+      path: "{{ item }}"
+      state: directory
+      mode: 0755
+      owner: plex
+      group: plex
+    with_items:
+      - /home/plex/transcode
+      - /opt/plex
+
   - name: Stop and remove existing container
     docker_container:
       name: plex
@@ -18,10 +37,11 @@
   - name: Create and start container
     docker_container:
       name: plex
+      hostname: "{{ inventory_hostname }}"
       image: "plexinc/pms-docker:{{ plex.tag }}"
       pull: yes
       published_ports:
-        - "127.0.0.1:32400:32400/tcp"
+        - "32400:32400/tcp"
         - "3005:3005/tcp"
         - "8324:8324/tcp"
         - "32469:32469/tcp"
@@ -33,8 +53,14 @@
         - "33400:33400/tcp"
         - "33443:33443/tcp"
       env:
-        HOSTNAME: "PlexServer"
-        PLEX_CLAIM: "{{ plex.claim.user_input | default(omit) }}"
+        HOSTNAME: "Plex"
+        PLEX_UID: "{{ uid.stdout }}"
+        PLEX_GID: "{{ gid.stdout }}"
+        PLEX_CLAIM: "{{ plex_claim.user_input | default(omit) }}"
         ALLOWED_NETWORKS: "192.168.1.0/24"
+      volumes:
+        - "/home/plex/transcode:/transcode"
+        - "/opt/plex:/config"
+        - "/mnt:/mnt"
       restart_policy: always
       state: started
