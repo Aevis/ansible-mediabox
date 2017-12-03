@@ -20,6 +20,7 @@
       manage_dir: yes
       key: "{{ lookup('file', 'pub-keys/{{ item.name }}.pub') }}"
       state: present
+    when: item.ssh
     with_items: "{{ users }}"
 
   - name: Disallow password authentication

@@ -2,3 +2,8 @@
   users:
     - name: deploy
       sudo: yes
+      ssh: yes
+
+    - name: plex
+      sudo: no
+      ssh: no
