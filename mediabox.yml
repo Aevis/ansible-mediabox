@@ -4,8 +4,9 @@
     - users.yml
     - variables.yml
   roles:
-    - { role: deploy-setup, tags: ['setup', 'deploy'] }
+    - { role: kernel, become: yes, tags: ['setup', 'kernel'] }
+    - { role: users, tags: ['setup', 'users'] }
     - { role: system, tags: ['setup', 'system'] }
     - { role: common, tags: ['setup', 'common'] }
     - { role: docker, tags: ['setup', 'docker'] }
-    - { role: plex, tags: ['plex'] }
+    - { role: plex, become: yes, become_user: root, tags: ['plex'] }
