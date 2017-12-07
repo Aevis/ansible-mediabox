@@ -22,7 +22,6 @@
     pause:
       prompt: "Enter samba share username"
     register: smb_username
-    when: smb_username.stat.exists == False
 
   - name: Ask for samba share password
     pause:
