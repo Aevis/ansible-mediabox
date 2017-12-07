@@ -1,0 +1,35 @@
+---
+  - name: Install samba
+    yum:
+      name: "{{ item }}"
+      state: installed
+    with_items:
+      - samba
+      - samba-client
+      - samba-common
+
+  - name: Copy configuration file
+    copy:
+      src: files/smb.conf
+      dest: /etc/samba/smb.conf
+      force: yes
+      owner: root
+      group: root
+      mode: 0644
+    notify: restart samba
+
+  - name: Ask for samba share username
+    pause:
+      prompt: "Enter samba share username"
+    register: smb_username
+    when: smb_username.stat.exists == False
+
+  - name: Ask for samba share password
+    pause:
+      prompt: "Enter samba share password"
+    register: smb_password
+    when: smb_username is defined
+
+  - name: Set samba password
+    shell: echo -ne "{{ smb_password.user_input }}" | smbpasswd -a -s {{ smb_username.user_input }}
+    when: smb_username.stat.exists == True

@@ -2,3 +2,4 @@ users.yml
 *.retry
 hosts
 pub-keys/*
+samba/files/*
