@@ -30,5 +30,5 @@
     when: smb_username is defined
 
   - name: Set samba password
-    shell: echo -ne "{{ smb_password.user_input }}" | smbpasswd -a -s {{ smb_username.user_input }}
+    shell: echo -ne "{{ smb_password.user_input }}\n{{ smb_password.user_input }}\n" | smbpasswd -a -s {{ smb_username.user_input }}
     when: smb_password is defined
