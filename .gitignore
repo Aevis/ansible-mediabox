@@ -1,4 +1,5 @@
 users.yml
+variables.yml
 *.retry
 hosts
 pub-keys/*
