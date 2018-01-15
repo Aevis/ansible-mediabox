@@ -1,0 +1,44 @@
+---
+    - name: Get sonarr uid
+      shell: "id -u sonarr"
+      register: uid
+
+    - name: Get sonarr gid
+      shell: "id -g sonarr"
+      register: gid
+
+    - name: Create common sonarr directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        owner: sonarr
+        group: sonarr
+      with_items:
+        - /opt/sonarr
+
+    - name: Stop and remove existing container
+      docker_container:
+        name: sonarr
+        state: absent
+
+    - name: Create and start container
+      docker_container:
+        name: sonarr
+        hostname: "{{ inventory_hostname }}"
+        image: "linuxserver/sonarr:{{ sonarr.tag }}"
+        pull: yes
+        published_ports:
+          - "8989:8989/tcp"
+        env:
+          HOSTNAME: "sonarr"
+          PUID: "{{ uid.stdout }}"
+          PGID: "{{ gid.stdout }}"
+        volumes:
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/tmp:/tmp"
+          - "/opt/sonarr:/config"
+          - "{{ data_mount }}/sabnzbd/complete:/downloads/sabnzbd"
+          - "{{ data_mount }}/video/tv:/tv"
+        restart_policy: always
+        state: started
