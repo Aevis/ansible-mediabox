@@ -60,8 +60,10 @@
         ADVERTISE_IP: "192.168.1.112:32400"
         ALLOWED_NETWORKS: "192.168.1.0/24, 172.17.0.0/24"
       volumes:
+        - "/etc/localtime:/etc/localtime:ro"
+        - "/tmp:/tmp"
         - "/home/plex/transcode:/transcode"
         - "/opt/plex:/config"
-        - "/mnt:/mnt"
+        - "{{ data_mount }}/video:/video"
       restart_policy: always
       state: started
