@@ -57,7 +57,8 @@
         PLEX_UID: "{{ uid.stdout }}"
         PLEX_GID: "{{ gid.stdout }}"
         PLEX_CLAIM: "{{ plex_claim.user_input | default(omit) }}"
-        ALLOWED_NETWORKS: "192.168.1.0/24"
+        ADVERTISE_IP: "192.168.1.112:32400"
+        ALLOWED_NETWORKS: "192.168.1.0/24, 172.17.0.0/24"
       volumes:
         - "/home/plex/transcode:/transcode"
         - "/opt/plex:/config"
