@@ -1,9 +1,25 @@
 ---
   users:
-    - name: deploy
-      sudo: yes
-      ssh: yes
-
     - name: plex
+      groups:
+        - content
+      sudo: no
+      ssh: no
+
+    - name: sabnzbd
+      groups:
+        - content
+      sudo: no
+      ssh: no
+
+    - name: radarr
+      groups:
+        - content
+      sudo: no
+      ssh: no
+
+    - name: sonarr
+      groups:
+        - content
       sudo: no
       ssh: no
