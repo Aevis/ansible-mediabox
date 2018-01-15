@@ -19,3 +19,19 @@
       special_time: reboot
       job: "package-cleanup --oldkernels --count=2"
       state: present
+
+  - name: Disallow SSH password authentication
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+      state: present
+    notify: Restart ssh
+
+  - name: Disallow root SSH access
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+      state: present
+    notify: Restart ssh
