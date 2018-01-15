@@ -16,6 +16,18 @@
         group: sabnzbd
       with_items:
         - /opt/sabnzbd
+        - "{{ data_mount }}/sabnzbd/incomplete-downloads"
+        - "{{ data_mount }}/sabnzbd/nzb"
+
+    - name: Create the sabnzbd dowlnoad directory
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0775
+        owner: sabnzbd
+        group: content
+      with_items:
+        - "{{ data_mount }}/sabnzbd/downloads"
 
     - name: Stop and remove existing container
       docker_container:
@@ -39,8 +51,8 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "/tmp:/tmp"
           - "/opt/sabnzbd:/config"
-          - "{{ data_mount }}/usenet/complete:/downloads"
-          - "{{ data_mount }}/usenet/incomplete:/incomplete-downloads"
-          - "{{ data_mount }}/usenet/nzb:/nzb"
+          - "{{ data_mount }}/sabnzbd/downloads:/downloads"
+          - "{{ data_mount }}/sabnzbd/incomplete-downloads:/incomplete-downloads"
+          - "{{ data_mount }}/sabnzbd/nzb:/nzb"
         restart_policy: always
         state: started
