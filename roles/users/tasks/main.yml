@@ -8,7 +8,7 @@
     user:
       name: "{{ item.name }}"
       shell: /bin/bash
-      groups: "{{ item.groups }}"
+      groups: "content"
       append: yes
       comment: "created by ansible"
       state: present
