@@ -12,3 +12,4 @@
     - { role: samba, tags: ['setup', 'samba'] }
     - { role: docker, tags: ['setup', 'docker'] }
     - { role: plex, tags: ['plex'] }
+    - { role: sabnzbd, tags: ['sabnzbd'] }

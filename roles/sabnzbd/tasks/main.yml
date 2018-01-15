@@ -39,8 +39,8 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "/tmp:/tmp"
           - "/opt/sabnzbd:/config"
-          - "{{ data_mount }}/usenet/complete:/complete"
-          - "{{ data_mount }}/incomplete:/incomplete"
+          - "{{ data_mount }}/usenet/complete:/downloads"
+          - "{{ data_mount }}/usenet/incomplete:/incomplete-downloads"
           - "{{ data_mount }}/usenet/nzb:/nzb"
         restart_policy: always
         state: started
