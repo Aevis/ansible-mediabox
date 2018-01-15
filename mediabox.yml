@@ -11,5 +11,6 @@
     - { role: common, tags: ['setup', 'common'] }
     - { role: samba, tags: ['setup', 'samba'] }
     - { role: docker, tags: ['setup', 'docker'] }
-    - { role: plex, tags: ['plex'] }
-    - { role: sabnzbd, tags: ['sabnzbd'] }
+    - { role: plex, tags: ['content', 'plex'] }
+    - { role: sabnzbd, tags: ['content', 'sabnzbd'] }
+    - { role: sonarr, tags: ['content', 'sonarr'] }
