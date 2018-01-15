@@ -1,0 +1,46 @@
+---
+    - name: Get sabnzbd uid
+      shell: "id -u sabnzbd"
+      register: uid
+
+    - name: Get sabnzbd gid
+      shell: "id -g sabnzbd"
+      register: gid
+
+    - name: Create common sabnzbd directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        owner: sabnzbd
+        group: sabnzbd
+      with_items:
+        - /opt/sabnzbd
+
+    - name: Stop and remove existing container
+      docker_container:
+        name: sabnzbd
+        state: absent
+
+    - name: Create and start container
+      docker_container:
+        name: sabnzbd
+        hostname: "{{ inventory_hostname }}"
+        image: "linuxserver/sabnzbd:{{ sabnzbd.tag }}"
+        pull: yes
+        published_ports:
+          - "8080:8080/tcp"
+          - "9090:9090/tcp"
+        env:
+          HOSTNAME: "SABnzbd"
+          PUID: "{{ uid.stdout }}"
+          PGID: "{{ gid.stdout }}"
+        volumes:
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/tmp:/tmp"
+          - "/opt/sabnzbd:/config"
+          - "{{ data_mount }}/usenet/complete:/complete"
+          - "{{ data_mount }}/incomplete:/incomplete"
+          - "{{ data_mount }}/usenet/nzb:/nzb"
+        restart_policy: always
+        state: started
