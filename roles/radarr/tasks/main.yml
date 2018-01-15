@@ -1,0 +1,44 @@
+---
+    - name: Get radarr uid
+      shell: "id -u radarr"
+      register: uid
+
+    - name: Get radarr gid
+      shell: "id -g radarr"
+      register: gid
+
+    - name: Create common radarr directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        owner: radarr
+        group: radarr
+      with_items:
+        - /opt/radarr
+
+    - name: Stop and remove existing container
+      docker_container:
+        name: radarr
+        state: absent
+
+    - name: Create and start container
+      docker_container:
+        name: radarr
+        hostname: "{{ inventory_hostname }}"
+        image: "linuxserver/radarr:{{ radarr.tag }}"
+        pull: yes
+        published_ports:
+          - "7878:7878/tcp"
+        env:
+          HOSTNAME: "radarr"
+          PUID: "{{ uid.stdout }}"
+          PGID: "{{ gid.stdout }}"
+        volumes:
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/tmp:/tmp"
+          - "/opt/radarr:/config"
+          - "{{ data_mount }}/sabnzbd/complete:/downloads/sabnzbd"
+          - "{{ data_mount }}/video/movies:/movies"
+        restart_policy: always
+        state: started

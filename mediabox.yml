@@ -14,3 +14,4 @@
     - { role: plex, tags: ['content', 'plex'] }
     - { role: sabnzbd, tags: ['content', 'sabnzbd'] }
     - { role: sonarr, tags: ['content', 'sonarr'] }
+    - { role: radarr, tags: ['content', 'radarr'] }
