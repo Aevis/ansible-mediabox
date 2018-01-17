@@ -44,7 +44,7 @@
           - "8080:8080/tcp"
           - "9090:9090/tcp"
         env:
-          HOSTNAME: "SABnzbd"
+          HOSTNAME: "sabnzbd"
           PUID: "{{ uid.stdout }}"
           PGID: "{{ gid.stdout }}"
         volumes:
@@ -55,4 +55,8 @@
           - "{{ data_mount }}/sabnzbd/incomplete-downloads:/incomplete-downloads"
           - "{{ data_mount }}/sabnzbd/nzb:/nzb"
         restart_policy: always
+        networks:
+          - name: common
+            aliases:
+              - sabnzbd
         state: started

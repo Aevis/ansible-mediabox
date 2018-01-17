@@ -66,4 +66,8 @@
         - "/opt/plex:/config"
         - "{{ data_mount }}/video:/video"
       restart_policy: always
+      networks:
+        - name: common
+          aliases:
+            - plex
       state: started

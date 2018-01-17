@@ -26,3 +26,7 @@
       owner: root
       group: root
       force: yes
+
+  - name: Create network
+    docker_network:
+      name: common

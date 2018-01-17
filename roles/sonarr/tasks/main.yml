@@ -41,4 +41,8 @@
           - "{{ data_mount }}/sabnzbd/complete:/downloads/sabnzbd"
           - "{{ data_mount }}/video/tv:/tv"
         restart_policy: always
+        networks:
+          - name: common
+            aliases:
+              - sonarr
         state: started
