@@ -1,0 +1,44 @@
+---
+- name: "Get organizr uid"
+  shell: "id -u organizr"
+  register: uid
+
+- name: "Get organizr gid"
+  shell: "id -g organizr"
+  register: gid
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: organizr
+    state: absent
+
+- name: Create common organizr directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: organizr
+    group: organizr
+  with_items:
+    - /opt/organizr
+
+- name: Create and start container
+  docker_container:
+    name: organizr
+    image: lsiocommunity/organizr
+    pull: yes
+    published_ports:
+      - "80:80"
+    env:
+      HOSTNAME: "organizr"
+      PUID: "{{uid.stdout}}"
+      PGID: "{{gid.stdout}}"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/opt/organizr:/config"
+    restart_policy: always
+    networks:
+      - name: common
+        aliases:
+          - organizr
+    state: started

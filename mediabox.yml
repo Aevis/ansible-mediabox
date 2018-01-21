@@ -16,3 +16,4 @@
     - { role: sonarr, tags: ['content', 'sonarr'] }
     - { role: radarr, tags: ['content', 'radarr'] }
     - { role: tautulli, tags: ['support', 'tautulli'] }
+    - { role: organizr, tags: ['support', 'organizr'] }
