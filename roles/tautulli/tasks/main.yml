@@ -1,0 +1,51 @@
+---
+    - name: Get tautulli uid
+      shell: "id -u tautulli"
+      register: uid
+
+    - name: Get tautulli gid
+      shell: "id -g tautulli"
+      register: gid
+
+    - name: Stop and remove existing container
+      docker_container:
+        name: tautulli
+        state: absent
+
+    - name: Wait for Plex Logs folder to be created by Plex
+      wait_for:
+        path: "/opt/plex/Library/Application Support/Plex Media Server/Logs"
+        state: present
+
+    - name: Create common tautulli directories
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: 0755
+        owner: tautulli
+        group: tautulli
+      with_items:
+        - /opt/tautulli
+
+    - name: Create and start container
+      docker_container:
+        name: tautulli
+        image: shiggins8/tautulli
+        pull: yes
+        published_ports:
+          - "8181:8181/tcp"
+        env:
+          HOSTNAME: "tautulli"
+          PUID: "{{ uid.stdout }}"
+          PGID: "{{ gid.stdout }}"
+        volumes:
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/tmp:/tmp"
+          - "/opt/tautulli:/config"
+          - "/opt/plex/Library/Application Support/Plex Media Server/Logs:/logs:ro"
+        restart_policy: always
+        networks:
+          - name: common
+            aliases:
+              - tautulli
+        state: started
